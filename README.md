@@ -1,5 +1,18 @@
 ## PROXY
 
+### hint
+If you encounter an error when trying to bind to an address.
+
+Then star locally via
+    
+    sudo %path/to/your/interpreter% proxy.py
+
+For test star
+
+    sudo %path/to/your/interpreter% -m pytest test.py
+
+    
+
 ### start
 To start the server, lift the container
     

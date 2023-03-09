@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  proxy_core:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+      - "8000:8000"
+      - "80:80"
+    command: sh -c "python -m proxy"

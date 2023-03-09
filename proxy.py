@@ -5,7 +5,7 @@ from handler import main_handler, sub_handler
 
 async def create_server_tasks(loop):
     host = '0.0.0.0'
-    ports = [(80, main_handler), (8000, sub_handler)]
+    ports = [(8000, main_handler)]
     for port, handler in ports:
         print('Serving on {}'.format((host, port)))
         loop.create_task(asyncio.start_server(handler, host, port))

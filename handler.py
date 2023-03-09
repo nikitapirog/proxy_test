@@ -35,10 +35,12 @@ async def relay_stream(stream_pair_from: StreamPair, stream_pair_to: StreamPair)
 
 
 async def https_handler(reader: StreamReader, writer: StreamWriter, request):
-    remote_reader, remote_writer = await asyncio.open_connection(request.host, request.port)
+    remote_reader, remote_writer = await asyncio.open_connection('nginx', 80)
     with closing(remote_writer):
         writer.write(b'HTTP/1.1 200 Connection Established\r\n\r\n')
         await writer.drain()
+        remote_writer.write(request)
+        await remote_writer.drain()
         print('HTTP connection established')
         await relay_stream((reader, remote_writer), (remote_reader, writer))
 
@@ -55,12 +57,12 @@ async def main_handler(reader: StreamReader, writer: StreamWriter, timeout=30):
                     request = RawHTTPParser(data)
                     print(f'Request: {str(request)}')
 
-                    if request.is_parse_error or request.check_user_agent:
-                        print('HERE')
-                        writer.write(b'HTTP/1.1 666 Error detected\r\n\r\n')
-                        await writer.drain()
-                    elif request.method:  # https
-                        await https_handler(reader, writer, request)
+                    # if request.is_parse_error or request.check_user_agent:
+                    #     print('HERE')
+                    #     writer.write(b'HTTP/1.1 666 Error detected\r\n\r\n')
+                    #     await writer.drain()
+                    # elif request.method:  # https
+                    await https_handler(reader, writer, data)
         except asyncio.TimeoutError:
             print('Timeout')
 
